@@ -1,84 +1,46 @@
-let map, userMarker;
-let count = 0;
-const countEl = document.getElementById("count");
-const statusEl = document.getElementById("status");
-
-// مركز الكعبة تقريبي
-const kaaba = { lat: 21.4225, lng: 39.8262 }; // مكة المكرمة
-
-// نطاق الطواف (نصف القطر تقريبي بالمتر)
-const radius = 50; 
-
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: kaaba,
-    zoom: 18
-  });
-
-  // نقطة الكعبة
-  new google.maps.Marker({
-    position: kaaba,
-    map: map,
-    title: "الكعبة",
-    icon: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
-  });
-
-  // متابعة الموقع الحالي للمستخدم
-  if (navigator.geolocation) {
-    navigator.geolocation.watchPosition(updatePosition);
-  } else {
-    alert("جهازك لا يدعم تحديد الموقع.");
-  }
+body {
+  font-family: Tahoma, Arial;
+  background: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
 }
 
-function updatePosition(position) {
-  const pos = {
-    lat: position.coords.latitude,
-    lng: position.coords.longitude
-  };
-
-  if (!userMarker) {
-    userMarker = new google.maps.Marker({
-      position: pos,
-      map: map,
-      title: "موقعك",
-      icon: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-    });
-  } else {
-    userMarker.setPosition(pos);
-  }
-
-  checkTawaf(pos);
+.app {
+  text-align: center;
+  width: 320px;
 }
 
-// التحقق من اكتمال شوط (تقريبي)
-let lastInside = false;
-function checkTawaf(pos) {
-  const distance = haversineDistance(pos, kaaba);
-  const inside = distance < radius;
-
-  if (inside && !lastInside) {
-    count++;
-    countEl.textContent = count;
-    statusEl.textContent = "✅ أكملت شوط!";
-  }
-  lastInside = inside;
+#map-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 15px auto;
 }
 
-// دالة لحساب المسافة بين نقطتين (بالمتر)
-function haversineDistance(pos1, pos2) {
-  const R = 6371000; // نصف قطر الأرض بالمتر
-  const dLat = toRad(pos2.lat - pos1.lat);
-  const dLng = toRad(pos2.lng - pos1.lng);
-  const a = Math.sin(dLat/2) ** 2 +
-            Math.cos(toRad(pos1.lat)) * Math.cos(toRad(pos2.lat)) *
-            Math.sin(dLng/2) ** 2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
+#map {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  border: 1px solid #ccc;
 }
 
-function toRad(deg) {
-  return deg * Math.PI / 180;
+#user-marker {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: blue;
+  border-radius: 50%;
+  top: 140px; /* نقطة البداية تقريبية */
+  left: 140px;
+  transform: translate(-50%, -50%);
 }
 
-window.onload = initMap;
+.buttons button {
+  margin: 5px;
+  padding: 10px 15px;
+  font-size: 16px;
+}
