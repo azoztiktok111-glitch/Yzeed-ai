@@ -1,36 +1,27 @@
-let count = localStorage.getItem("tawaf") || 0;
-count = parseInt(count);
-
-const countEl = document.getElementById("count");
-const statusEl = document.getElementById("status");
-
-update();
-
-function add() {
-  if (count < 7) {
-    count++;
-    save();
-  }
+body {
+  font-family: Tahoma, Arial;
+  background: #f5f5f5;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
 }
 
-function remove() {
-  if (count > 0) {
-    count--;
-    save();
-  }
+.app {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
 }
 
-function reset() {
-  count = 0;
-  save();
+#map {
+  width: 100%;
+  height: 400px;
+  margin-bottom: 20px;
 }
 
-function save() {
-  localStorage.setItem("tawaf", count);
-  update();
-}
-
-function update() {
-  countEl.textContent = count;
-  statusEl.textContent = count === 7 ? "✅ تم الطواف" : "متبقي: " + (7 - count);
+.info p {
+  font-size: 20px;
+  margin: 5px 0;
 }
