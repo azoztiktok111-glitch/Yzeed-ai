@@ -2,29 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>عداد أشواط العمرة</title>
+<title>مواقيت الصلاة</title>
+
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0d6efd">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 <body>
 
 <div class="app">
-  <h1>🕋 عداد أشواط العمرة</h1>
+  <h1>🕌 مواقيت الصلاة</h1>
+  <p id="location">جاري تحديد الموقع...</p>
 
-  <div id="map-container">
-    <img src="C8069112-6CE1-4FCC-A42F-AB5489B5D4B2.png" alt="خريطة الكعبة" id="map">
-    <div id="user-marker"></div>
-  </div>
-
-  <div class="buttons">
-    <button onclick="add()">+ شوط</button>
-    <button onclick="remove()">− شوط</button>
-    <button onclick="reset()">إعادة</button>
-  </div>
-
-  <p>أشواط مكتملة: <span id="count">0</span></p>
-  <p id="status"></p>
+  <ul>
+    <li>الفجر: <span id="Fajr">--</span></li>
+    <li>الظهر: <span id="Dhuhr">--</span></li>
+    <li>العصر: <span id="Asr">--</span></li>
+    <li>المغرب: <span id="Maghrib">--</span></li>
+    <li>العشاء: <span id="Isha">--</span></li>
+  </ul>
 </div>
 
 <script src="script.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+
 </body>
 </html>
