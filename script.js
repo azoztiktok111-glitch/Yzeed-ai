@@ -1,35 +1,19 @@
-const locationEl = document.getElementById("location");
-const prayerIds = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+// إحداثيات مكة
+const lat = 21.3891;
+const lng = 39.8579;
 
-const saved = JSON.parse(localStorage.getItem("prayerTimes"));
-if (saved) showTimes(saved, "📴 بدون إنترنت");
+// طريقة الحساب
+const prayTimes = new PrayTimes('Makkah');
 
-if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(success, fail);
-} else {
-  locationEl.textContent = "❌ جهازك لا يدعم تحديد الموقع";
-}
+// التاريخ الحالي
+const date = new Date();
 
-function success(pos) {
-  const lat = pos.coords.latitude;
-  const lon = pos.coords.longitude;
+// فرق التوقيت (السعودية)
+const times = prayTimes.getTimes(date, [lat, lng], 3);
 
-  fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`)
-    .then(r => r.json())
-    .then(data => {
-      const times = data.data.timings;
-      localStorage.setItem("prayerTimes", JSON.stringify(times));
-      showTimes(times, "📍 حسب موقعك");
-    });
-}
-
-function fail() {
-  locationEl.textContent = "📴 بدون إنترنت";
-}
-
-function showTimes(times, msg) {
-  locationEl.textContent = msg;
-  prayerIds.forEach(p => {
-    document.getElementById(p).textContent = times[p];
-  });
-}
+// عرض النتائج
+document.getElementById("fajr").textContent = times.fajr;
+document.getElementById("dhuhr").textContent = times.dhuhr;
+document.getElementById("asr").textContent = times.asr;
+document.getElementById("maghrib").textContent = times.maghrib;
+document.getElementById("isha").textContent = times.isha;
