@@ -1,36 +1,35 @@
-let count = localStorage.getItem("tawaf") || 0;
-count = parseInt(count);
+const locationEl = document.getElementById("location");
+const prayerIds = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
 
-const countEl = document.getElementById("count");
-const statusEl = document.getElementById("status");
+const saved = JSON.parse(localStorage.getItem("prayerTimes"));
+if (saved) showTimes(saved, "📴 بدون إنترنت");
 
-update();
-
-function add() {
-  if (count < 7) {
-    count++;
-    save();
-  }
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(success, fail);
+} else {
+  locationEl.textContent = "❌ جهازك لا يدعم تحديد الموقع";
 }
 
-function remove() {
-  if (count > 0) {
-    count--;
-    save();
-  }
+function success(pos) {
+  const lat = pos.coords.latitude;
+  const lon = pos.coords.longitude;
+
+  fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=4`)
+    .then(r => r.json())
+    .then(data => {
+      const times = data.data.timings;
+      localStorage.setItem("prayerTimes", JSON.stringify(times));
+      showTimes(times, "📍 حسب موقعك");
+    });
 }
 
-function reset() {
-  count = 0;
-  save();
+function fail() {
+  locationEl.textContent = "📴 بدون إنترنت";
 }
 
-function save() {
-  localStorage.setItem("tawaf", count);
-  update();
-}
-
-function update() {
-  countEl.textContent = count;
-  statusEl.textContent = count === 7 ? "✅ تم الطواف" : "متبقي: " + (7 - count);
+function showTimes(times, msg) {
+  locationEl.textContent = msg;
+  prayerIds.forEach(p => {
+    document.getElementById(p).textContent = times[p];
+  });
 }
